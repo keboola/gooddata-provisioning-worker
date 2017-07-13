@@ -38,7 +38,7 @@ class RunCommand extends Command
 
             $parameters = new ConfigParameters($config);
 
-            $app = new App($consoleOutput);
+            $app = new App($consoleOutput, $parameters->getImageParameters());
 
             $action = $config['action'] ?? 'run';
             switch ($action) {
