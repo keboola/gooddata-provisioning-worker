@@ -43,8 +43,8 @@ class App
     {
         switch ($options['taskName']) {
             case 'CreateProject':
-                $task = new CreateProject($this->gdClient);
-                return $task->run($options['taskParameters']);
+                $task = new CreateProject($this->gdClient, $this->db);
+                $task->run($options['taskParameters']);
                 break;
             case 'CreateUser':
                 break;
