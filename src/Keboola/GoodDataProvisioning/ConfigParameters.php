@@ -17,12 +17,12 @@ class ConfigParameters
 
     protected function validate($config)
     {
-        foreach (['name', 'user', 'password', 'host'] as $key) {
+        foreach (['name', 'user', '#password', 'host'] as $key) {
             if (!isset($config['image_parameters']['db'][$key])) {
                 throw new \Exception("Configuration key image_parameters.db.$key is missing");
             }
         }
-        foreach (['backendUrl', 'username', 'password'] as $key) {
+        foreach (['backendUrl', 'username', '#password'] as $key) {
             if (!isset($config['image_parameters']['gd'][$key])) {
                 throw new \Exception("Configuration key image_parameters.gd.$key is missing");
             }
