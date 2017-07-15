@@ -12,8 +12,8 @@ class ConfigParametersTest extends \PHPUnit\Framework\TestCase
 {
     protected $validConfig = [
         'image_parameters' => [
-            'db' => ['name' => 'a', 'user' => 'b', 'password' => 'c', 'host' => 'd'],
-            'gd' => ['backendUrl' => 'x', 'username' => 'y', 'password' => 'z']
+            'db' => ['name' => 'a', 'user' => 'b', '#password' => 'c', 'host' => 'd'],
+            'gd' => ['backendUrl' => 'x', 'username' => 'y', '#password' => 'z']
         ],
         'parameters' => [
             'taskName' => 'CreateProject',
@@ -39,7 +39,15 @@ class ConfigParametersTest extends \PHPUnit\Framework\TestCase
         $this->checkConfig($config);
 
         $config = $this->validConfig;
+        unset($config['image_parameters']['db']['#password']);
+        $this->checkConfig($config);
+
+        $config = $this->validConfig;
         unset($config['image_parameters']['gd']['backendUrl']);
+        $this->checkConfig($config);
+
+        $config = $this->validConfig;
+        unset($config['image_parameters']['gd']['#password']);
         $this->checkConfig($config);
     }
 
