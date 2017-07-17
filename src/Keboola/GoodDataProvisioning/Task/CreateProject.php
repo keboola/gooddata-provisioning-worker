@@ -6,6 +6,9 @@
  */
 namespace Keboola\GoodDataProvisioning\Task;
 
+use Keboola\GoodData\Exception;
+use Keboola\GoodDataProvisioning\UserException;
+
 class CreateProject
 {
     /** @var  \Keboola\GoodData\Client */
@@ -21,7 +24,14 @@ class CreateProject
 
     public function run($params)
     {
-        $projectPid = $this->gdClient->getProjects()->createProject($params['name'], $params['authToken']);
+        try {
+            $projectPid = $this->gdClient->getProjects()->createProject($params['name'], $params['authToken']);
+        } catch (Exception $e) {
+            if ($e->getCode() === 404) {
+                throw new UserException('Project creation failed, check your authToken');
+            }
+            throw $e;
+        }
         $this->db->insert('projects', [
             'pid' => $projectPid,
             'projectId' => getenv('KBC_PROJECTID'),
