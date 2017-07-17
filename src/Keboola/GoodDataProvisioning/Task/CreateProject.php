@@ -25,7 +25,7 @@ class CreateProject
         $this->db->insert('projects', [
             'pid' => $projectPid,
             'projectId' => getenv('KBC_PROJECTID'),
-            'runId' => getenv('KBC_RUNID'),
+            'jobId' => getenv('KBC_RUNID'),
             'authToken' => $params['authToken'],
             'createdBy' => getenv('KBC_TOKENDESC')
         ]);
