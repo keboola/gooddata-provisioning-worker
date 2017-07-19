@@ -9,19 +9,8 @@ namespace Keboola\GoodDataProvisioning\Task;
 use Keboola\GoodData\Exception;
 use Keboola\GoodDataProvisioning\UserException;
 
-class CreateProject
+class CreateProject extends AbstractTask
 {
-    /** @var  \Keboola\GoodData\Client */
-    protected $gdClient;
-    /** @var \Doctrine\DBAL\Connection  */
-    protected $db;
-
-    public function __construct(\Keboola\GoodData\Client $gdClient, \Doctrine\DBAL\Connection $db)
-    {
-        $this->gdClient = $gdClient;
-        $this->db = $db;
-    }
-
     public function run($params)
     {
         try {
@@ -35,9 +24,9 @@ class CreateProject
         $this->db->insert('projects', [
             'pid' => $projectPid,
             'projectId' => getenv('KBC_PROJECTID'),
-            'jobId' => getenv('KBC_RUNID'),
             'authToken' => $params['authToken'],
-            'createdBy' => getenv('KBC_TOKENDESC')
+            'createdById' => getenv('KBC_TOKENID'),
+            'createdByName' => getenv('KBC_TOKENDESC')
         ]);
     }
 }
