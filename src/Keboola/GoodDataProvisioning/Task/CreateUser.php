@@ -6,10 +6,17 @@
  */
 namespace Keboola\GoodDataProvisioning\Task;
 
+use Keboola\GoodData\Exception;
+use Keboola\GoodDataProvisioning\UserException;
+
 class CreateUser extends AbstractTask
 {
-    public function run($params)
+    public function run($jobId, $params)
     {
+        $job = $this->db->fetchAssoc('SELECT * FROM users WHERE jobId=?', [$jobId]);
+        if (!$job) {
+            throw new UserException("Job $jobId not found, try again please");
+        }
         $options = [
             'firstName' => $params['firstName'],
             'lastName' => $params['lastName'],
@@ -18,18 +25,21 @@ class CreateUser extends AbstractTask
         if (isset($params['email'])) {
             $options['email'] = strtolower($params['email']);
         }
-        $userId = $this->gdClient->getUsers()->createUser(
-            strtolower($params['login']),
-            $params['password'],
-            $this->imageParameters['gd']['domain'],
-            $options
-        );
-        $this->db->insert('projects', [
-            'uid' => $userId,
-            'login' => strtolower($params['login']),
-            'projectId' => getenv('KBC_PROJECTID'),
-            'createdById' => getenv('KBC_TOKENID'),
-            'createdByName' => getenv('KBC_TOKENDESC')
-        ]);
+        try {
+            $uid = $this->gdClient->getUsers()->createUser(
+                strtolower($params['login']),
+                $params['password'],
+                $this->imageParameters['gd']['domain'],
+                $options
+            );
+        } catch (Exception $e) {
+            $this->db->update(
+                'users',
+                ['error' => $e->getMessage(), 'status' => 'error'],
+                ['jobId=?' => $jobId]
+            );
+            throw $e;
+        }
+        $this->db->update('users', ['uid' => $uid, 'status' => 'ready'], ['jobId' => $jobId]);
     }
 }

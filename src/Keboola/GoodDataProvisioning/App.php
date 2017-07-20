@@ -47,14 +47,14 @@ class App
 
     public function run($options)
     {
-        switch ($options['taskName']) {
+        switch ($options['job']['name']) {
             case 'CreateProject':
                 $task = new CreateProject($this->gdClient, $this->db, $this->imageParameters);
-                $task->run($options['taskParameters']);
+                $task->run($options['job']['id'], $options['job']['parameters']);
                 break;
             case 'CreateUser':
                 $task = new CreateUser($this->gdClient, $this->db, $this->imageParameters);
-                $task->run($options['taskParameters']);
+                $task->run($options['job']['id'], $options['job']['parameters']);
                 break;
             case 'AddUserToProject':
                 break;

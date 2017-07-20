@@ -11,22 +11,31 @@ use Keboola\GoodDataProvisioning\UserException;
 
 class CreateProject extends AbstractTask
 {
-    public function run($params)
+    public function run($jobId, $params)
     {
+        $job = $this->db->fetchAssoc('SELECT * FROM projects WHERE jobId=?', [$jobId]);
+        if (!$job) {
+            throw new UserException("Job $jobId not found, try again please");
+        }
         try {
-            $projectPid = $this->gdClient->getProjects()->createProject($params['name'], $params['authToken']);
+            $pid = $this->gdClient->getProjects()->createProject($params['name'], $params['authToken']);
         } catch (Exception $e) {
             if ($e->getCode() === 404) {
-                throw new UserException('Project creation failed, check your authToken');
+                $err = 'Project creation failed, check your authToken';
+                $this->db->update(
+                    'projects',
+                    ['error' => $err, 'status' => 'error'],
+                    ['jobId=?' => $jobId]
+                );
+                throw new UserException($err);
             }
+            $this->db->update(
+                'projects',
+                ['error' => $e->getMessage(), 'status' => 'error'],
+                ['jobId=?' => $jobId]
+            );
             throw $e;
         }
-        $this->db->insert('projects', [
-            'pid' => $projectPid,
-            'projectId' => getenv('KBC_PROJECTID'),
-            'authToken' => $params['authToken'],
-            'createdById' => getenv('KBC_TOKENID'),
-            'createdByName' => getenv('KBC_TOKENDESC')
-        ]);
+        $this->db->update('projects', ['pid' => $pid, 'status' => 'ready'], ['jobId' => $jobId]);
     }
 }

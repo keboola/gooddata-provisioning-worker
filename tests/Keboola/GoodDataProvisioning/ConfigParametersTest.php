@@ -13,21 +13,26 @@ class ConfigParametersTest extends \PHPUnit\Framework\TestCase
     protected $validConfig = [
         'image_parameters' => [
             'db' => ['name' => 'a', 'user' => 'b', '#password' => 'c', 'host' => 'd'],
-            'gd' => ['backendUrl' => 'x', 'username' => 'y', '#password' => 'z']
+            'gd' => ['backendUrl' => 'x', 'username' => 'y', '#password' => 'z', 'domain' => 'domain', 'ssoProvider' => 'provider']
         ],
         'parameters' => [
-            'taskName' => 'CreateProject',
-            'taskParameters' => ['name' => 'Test', 'authToken' => 'token']
+            'job' => [
+                'id' => 111,
+                'name' => 'CreateProject',
+                'parameters' => ['name' => 'Test', 'authToken' => 'token']
+            ]
         ]
     ];
 
     public function testValidConfig()
     {
         $params = new ConfigParameters($this->validConfig);
-        $this->assertArrayHasKey('taskName', $params->getParameters());
-        $this->assertArrayHasKey('taskParameters', $params->getParameters());
-        $this->assertArrayHasKey('name', $params->getParameters()['taskParameters']);
-        $this->assertArrayHasKey('authToken', $params->getParameters()['taskParameters']);
+        $this->assertArrayHasKey('job', $params->getParameters());
+        $this->assertArrayHasKey('id', $params->getParameters()['job']);
+        $this->assertArrayHasKey('name', $params->getParameters()['job']);
+        $this->assertArrayHasKey('parameters', $params->getParameters()['job']);
+        $this->assertArrayHasKey('name', $params->getParameters()['job']['parameters']);
+        $this->assertArrayHasKey('authToken', $params->getParameters()['job']['parameters']);
         $this->assertArrayHasKey('db', $params->getImageParameters());
         $this->assertArrayHasKey('gd', $params->getImageParameters());
     }

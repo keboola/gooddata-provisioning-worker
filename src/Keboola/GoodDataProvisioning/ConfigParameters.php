@@ -28,21 +28,25 @@ class ConfigParameters
             }
         }
 
-        foreach (['taskName', 'taskParameters'] as $key) {
-            if (!isset($config['parameters'][$key])) {
-                throw new UserException("Configuration key parameters.$key is missing");
+        if (!isset($config['parameters']['job'])) {
+            throw new UserException("Configuration key parameters.job is missing");
+        }
+
+        foreach (['name', 'parameters', 'id'] as $key) {
+            if (!isset($config['parameters']['job'][$key])) {
+                throw new UserException("Configuration key parameters.job.$key is missing");
             }
         }
-        if (!is_array($config['parameters']['taskParameters'])) {
-            throw new UserException('Configuration key parameters.taskParameters must be an array');
+        if (!is_array($config['parameters']['job']['parameters'])) {
+            throw new UserException('Configuration key parameters.job.parameters must be an array');
         }
-        switch ($config['parameters']['taskName']) {
+        switch ($config['parameters']['job']['name']) {
             case 'CreateProject':
                 $this->validateRequired($config, ['name', 'authToken']);
                 break;
             case 'CreateUser':
                 $this->validateRequired($config, ['firstName', 'lastName', 'login', 'password']);
-                if (strlen($config['parameters']['taskParameters']['password']) < 7) {
+                if (strlen($config['parameters']['job']['parameters']['password']) < 7) {
                     throw new UserException("Configuration parameter password must have at least seven characters");
                 }
                 break;
@@ -58,8 +62,8 @@ class ConfigParameters
     {
         if (count($taskParams)) {
             foreach ($taskParams as $key) {
-                if (!isset($config['parameters']['taskParameters'][$key])) {
-                    throw new UserException("Configuration key parameters.taskParameters.$key is missing");
+                if (!isset($config['parameters']['job']['parameters'][$key])) {
+                    throw new UserException("Configuration key parameters.job.parameters.$key is missing");
                 }
             }
         }
