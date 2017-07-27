@@ -17,9 +17,9 @@ class ConfigParameters
 
     protected function validate($config)
     {
-        foreach (['name', 'user', '#password', 'host'] as $key) {
-            if (!isset($config['image_parameters']['db'][$key])) {
-                throw new \Exception("Configuration key image_parameters.db.$key is missing");
+        foreach (['baseUri', '#token'] as $key) {
+            if (!isset($config['image_parameters']['api'][$key])) {
+                throw new \Exception("Configuration key image_parameters.api.$key is missing");
             }
         }
         foreach (['backendUrl', 'username', '#password', 'domain', 'ssoProvider'] as $key) {

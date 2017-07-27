@@ -13,7 +13,7 @@ class CreateProject extends AbstractTask
 {
     public function run($jobId, $params)
     {
-        $job = $this->db->fetchAssoc('SELECT * FROM projects WHERE jobId=?', [$jobId]);
+        $job = $this->apiClient->getProjectJob($jobId);
         if (!$job) {
             throw new UserException("Job $jobId not found, try again please");
         }
@@ -22,20 +22,12 @@ class CreateProject extends AbstractTask
         } catch (Exception $e) {
             if ($e->getCode() === 404) {
                 $err = 'Project creation failed, check your authToken';
-                $this->db->update(
-                    'projects',
-                    ['error' => $err, 'status' => 'error'],
-                    ['jobId=?' => $jobId]
-                );
+                $this->apiClient->updateProjectJob($jobId, ['error' => $err, 'status' => 'error']);
                 throw new UserException($err);
             }
-            $this->db->update(
-                'projects',
-                ['error' => $e->getMessage(), 'status' => 'error'],
-                ['jobId=?' => $jobId]
-            );
+            $this->apiClient->updateProjectJob($jobId, ['error' => $e->getMessage(), 'status' => 'error']);
             throw $e;
         }
-        $this->db->update('projects', ['pid' => $pid, 'status' => 'ready'], ['jobId' => $jobId]);
+        $this->apiClient->updateProjectJob($jobId, ['pid' => $pid, 'status' => 'ready']);
     }
 }

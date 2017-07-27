@@ -9,11 +9,8 @@ namespace Keboola\GoodDataProvisioning;
 use Keboola\GoodData\Client;
 use Keboola\GoodDataProvisioning\Task\CreateProject;
 use Keboola\GoodDataProvisioning\Task\CreateUser;
-use Keboola\GoodDataProvisioning\Task\TaskInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class App
@@ -23,8 +20,8 @@ class App
     private $imageParameters;
     /** @var Client  */
     private $gdClient;
-    /** @var \Doctrine\DBAL\Connection  */
-    private $db;
+    /** @var  ApiClient */
+    private $apiClient;
 
     public function __construct($consoleOutput, $imageParameters)
     {
@@ -35,25 +32,18 @@ class App
             new Logger('gooddata-provisioning', [new StreamHandler('php://stdout')])
         );
         $this->gdClient->login($imageParameters['gd']['username'], $imageParameters['gd']['#password']);
-
-        $this->db = \Doctrine\DBAL\DriverManager::getConnection([
-            'dbname' => $imageParameters['db']['name'],
-            'user' => $imageParameters['db']['user'],
-            'password' => $imageParameters['db']['#password'],
-            'host' => $imageParameters['db']['host'],
-            'driver' => 'pdo_mysql'
-        ]);
+        $this->apiClient = new ApiClient($imageParameters['api']['baseUri'], $imageParameters['api']['#token']);
     }
 
     public function run($options)
     {
         switch ($options['job']['name']) {
             case 'CreateProject':
-                $task = new CreateProject($this->gdClient, $this->db, $this->imageParameters);
+                $task = new CreateProject($this->gdClient, $this->apiClient, $this->imageParameters);
                 $task->run($options['job']['id'], $options['job']['parameters']);
                 break;
             case 'CreateUser':
-                $task = new CreateUser($this->gdClient, $this->db, $this->imageParameters);
+                $task = new CreateUser($this->gdClient, $this->apiClient, $this->imageParameters);
                 $task->run($options['job']['id'], $options['job']['parameters']);
                 break;
             case 'AddUserToProject':

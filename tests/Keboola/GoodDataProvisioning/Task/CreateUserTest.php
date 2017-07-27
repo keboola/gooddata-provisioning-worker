@@ -12,17 +12,13 @@ class CreateUserTest extends AbstractTaskTest
 {
     public function testRun()
     {
-        $jobId = rand(1, 255);
         $login = uniqid() . '@gdpr.test.keboola.com';
-        $this->db->insert(
-            'users',
-            ['jobId' => $jobId, 'login' => $login, 'projectId' => 1, 'createdById' => 1, 'createdByName' => 'me']
-        );
+        $jobId = $this->apiClient->createUser($login, 'me');
 
-        $task = new CreateUser($this->gdClient, $this->db, $this->imageParameters);
+        $task = new CreateUser($this->gdClient, $this->apiClient, $this->imageParameters);
         $task->run($jobId, ['login' => $login, 'password' => '1234567x', 'firstName' => 'Test', 'lastName' => 'GD']);
 
-        $job = $this->db->fetchAssoc('SELECT * FROM users WHERE jobId=?', [$jobId]);
+        $job = $this->apiClient->getUserJob($jobId);
         $this->assertNotEmpty($job['uid']);
         $this->assertEquals('ready', $job['status']);
 

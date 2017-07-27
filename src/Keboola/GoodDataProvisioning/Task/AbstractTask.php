@@ -6,21 +6,23 @@
  */
 namespace Keboola\GoodDataProvisioning\Task;
 
+use Keboola\GoodDataProvisioning\ApiClient;
+
 abstract class AbstractTask
 {
     /** @var  \Keboola\GoodData\Client */
     protected $gdClient;
-    /** @var \Doctrine\DBAL\Connection  */
-    protected $db;
+    /** @var  ApiClient */
+    protected $apiClient;
     protected $imageParameters;
 
     public function __construct(
         \Keboola\GoodData\Client $gdClient,
-        \Doctrine\DBAL\Connection $db,
+        ApiClient $apiClient,
         array $imageParameters
     ) {
         $this->gdClient = $gdClient;
-        $this->db = $db;
+        $this->apiClient = $apiClient;
         $this->imageParameters = $imageParameters;
     }
 

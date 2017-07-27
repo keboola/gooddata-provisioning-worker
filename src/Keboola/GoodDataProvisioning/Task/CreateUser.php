@@ -13,7 +13,7 @@ class CreateUser extends AbstractTask
 {
     public function run($jobId, $params)
     {
-        $job = $this->db->fetchAssoc('SELECT * FROM users WHERE jobId=?', [$jobId]);
+        $job = $this->apiClient->getUserJob($jobId);
         if (!$job) {
             throw new UserException("Job $jobId not found, try again please");
         }
@@ -33,13 +33,9 @@ class CreateUser extends AbstractTask
                 $options
             );
         } catch (Exception $e) {
-            $this->db->update(
-                'users',
-                ['error' => $e->getMessage(), 'status' => 'error'],
-                ['jobId=?' => $jobId]
-            );
+            $this->apiClient->updateUserJob($jobId, ['error' => $e->getMessage(), 'status' => 'error']);
             throw $e;
         }
-        $this->db->update('users', ['uid' => $uid, 'status' => 'ready'], ['jobId' => $jobId]);
+        $this->apiClient->updateUserJob($jobId, ['uid' => $uid, 'status' => 'ready']);
     }
 }

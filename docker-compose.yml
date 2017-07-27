@@ -14,17 +14,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    links:
-      - mysql
     command: sh -c './tests.sh'
     volumes:
       - ./:/code
     environment:
-      - "TEST_DB_HOST=mysql"
-      - "TEST_DB_PORT=3306"
-      - "TEST_DB_USER=user"
-      - "TEST_DB_PASSWORD=password"
-      - "TEST_DB_NAME=testdb"
       - TEST_GD_LOGIN
       - TEST_GD_PASSWORD
       - TEST_GD_BACKEND
@@ -36,31 +29,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    links:
-      - mysql
     command: sh -c '
              sleep 10
              && ./tests.sh
              '
     environment:
-      - "TEST_DB_HOST=mysql"
-      - "TEST_DB_PORT=3306"
-      - "TEST_DB_USER=user"
-      - "TEST_DB_PASSWORD=password"
-      - "TEST_DB_NAME=testdb"
       - TEST_GD_LOGIN
       - TEST_GD_PASSWORD
       - TEST_GD_BACKEND
       - TEST_GD_DOMAIN
       - TEST_GD_SSO_PROVIDER
       - TEST_GD_AUTH_TOKEN
-
-  mysql:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: testdb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    ports:
-      - "3306:3306"

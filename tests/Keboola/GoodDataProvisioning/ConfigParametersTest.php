@@ -12,7 +12,7 @@ class ConfigParametersTest extends \PHPUnit\Framework\TestCase
 {
     protected $validConfig = [
         'image_parameters' => [
-            'db' => ['name' => 'a', 'user' => 'b', '#password' => 'c', 'host' => 'd'],
+            'api' => ['baseUri' => 'a', '#token' => 'b'],
             'gd' => ['backendUrl' => 'x', 'username' => 'y', '#password' => 'z', 'domain' => 'domain', 'ssoProvider' => 'provider']
         ],
         'parameters' => [
@@ -33,18 +33,18 @@ class ConfigParametersTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('parameters', $params->getParameters()['job']);
         $this->assertArrayHasKey('name', $params->getParameters()['job']['parameters']);
         $this->assertArrayHasKey('authToken', $params->getParameters()['job']['parameters']);
-        $this->assertArrayHasKey('db', $params->getImageParameters());
+        $this->assertArrayHasKey('api', $params->getImageParameters());
         $this->assertArrayHasKey('gd', $params->getImageParameters());
     }
 
     public function testMissingImageParameters()
     {
         $config = $this->validConfig;
-        unset($config['image_parameters']['db']['name']);
+        unset($config['image_parameters']['api']['baseUri']);
         $this->checkConfig($config);
 
         $config = $this->validConfig;
-        unset($config['image_parameters']['db']['#password']);
+        unset($config['image_parameters']['api']['#token']);
         $this->checkConfig($config);
 
         $config = $this->validConfig;

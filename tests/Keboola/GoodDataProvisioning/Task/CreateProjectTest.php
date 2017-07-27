@@ -12,14 +12,13 @@ class CreateProjectTest extends AbstractTaskTest
 {
     public function testRun()
     {
-        $jobId = rand(1, 255);
         $projectName = '[gdpr] ' . uniqid();
-        $this->db->insert('projects', ['jobId' => $jobId, 'projectId' => 1, 'createdById' => 1, 'createdByName' => 'me']);
+        $jobId = $this->apiClient->createProject(1, TEST_GD_AUTH_TOKEN, 'me');
 
-        $task = new CreateProject($this->gdClient, $this->db, $this->imageParameters);
+        $task = new CreateProject($this->gdClient, $this->apiClient, $this->imageParameters);
         $task->run($jobId, ['name' => $projectName, 'authToken' => TEST_GD_AUTH_TOKEN]);
 
-        $job = $this->db->fetchAssoc('SELECT * FROM projects WHERE jobId=?', [$jobId]);
+        $job = $this->apiClient->getProjectJob($jobId);
         $this->assertNotEmpty($job['pid']);
         $this->assertEquals('ready', $job['status']);
 

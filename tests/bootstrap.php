@@ -1,19 +1,10 @@
 <?php
 
-defined('TEST_DB_HOST')
-|| define('TEST_DB_HOST', getenv('TEST_DB_HOST') ? getenv('TEST_DB_HOST') : null);
+defined('TEST_API_BASEURI')
+|| define('TEST_API_BASEURI', getenv('TEST_API_BASEURI') ? getenv('TEST_API_BASEURI') : null);
 
-defined('TEST_DB_NAME')
-|| define('TEST_DB_NAME', getenv('TEST_DB_NAME') ? getenv('TEST_DB_NAME') : null);
-
-defined('TEST_DB_USER')
-|| define('TEST_DB_USER', getenv('TEST_DB_USER') ? getenv('TEST_DB_USER') : null);
-
-defined('TEST_DB_PASSWORD')
-|| define('TEST_DB_PASSWORD', getenv('TEST_DB_PASSWORD') ? getenv('TEST_DB_PASSWORD') : null);
-
-defined('TEST_DB_PORT')
-|| define('TEST_DB_PORT', getenv('TEST_DB_PORT') ? getenv('TEST_DB_PORT') : null);
+defined('TEST_API_TOKEN')
+|| define('TEST_API_TOKEN', getenv('TEST_API_TOKEN') ? getenv('TEST_API_TOKEN') : null);
 
 defined('TEST_GD_LOGIN')
 || define('TEST_GD_LOGIN', getenv('TEST_GD_LOGIN') ? getenv('TEST_GD_LOGIN') : null);
