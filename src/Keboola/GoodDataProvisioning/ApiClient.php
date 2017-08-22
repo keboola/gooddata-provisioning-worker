@@ -48,7 +48,7 @@ class ApiClient
     public function __construct($url, $token, $logger = null, array $options = [])
     {
         $this->guzzleOptions = array_replace_recursive(self::DEFAULT_CLIENT_SETTINGS, $options);
-        $this->guzzleOptions['base_uri'] = $url;
+        $this->guzzleOptions['base_uri'] = substr($url, -1) == '/' ? $url : "$url/";
         if ($logger) {
             $this->logger = $logger;
         }
@@ -92,22 +92,22 @@ class ApiClient
 
     public function getProjectJob($id)
     {
-        return $this->request('get', "/projects/jobs/$id");
+        return $this->request('get', "projects/jobs/$id");
     }
 
     public function updateProjectJob($id, $params)
     {
-        return $this->request('patch', "/projects/jobs/$id", $params);
+        return $this->request('patch', "projects/jobs/$id", $params);
     }
 
     public function getUserJob($id)
     {
-        return $this->request('get', "/users/jobs/$id");
+        return $this->request('get', "users/jobs/$id");
     }
 
     public function updateUserJob($id, $params)
     {
-        return $this->request('patch', "/users/jobs/$id", $params);
+        return $this->request('patch', "users/jobs/$id", $params);
     }
 
     public function request($method, $uri, $params = [])
@@ -123,11 +123,12 @@ class ApiClient
 
         try {
             $response = $this->guzzle->request($method, $uri, $options);
-            return \GuzzleHttp\json_decode($response->getBody(), true);
+            $body = (string)$response->getBody();
+            return $body? \GuzzleHttp\json_decode($body, true) : null;
         } catch (\Exception $e) {
             $response = $e instanceof RequestException && $e->hasResponse() ? $e->getResponse() : null;
             if ($response) {
-                throw new UserException("Request $method  $uri failed (status {$response->getStatusCode()}): {$response->getBody()}");
+                throw new UserException("Request $method $uri failed (status {$response->getStatusCode()}): {$response->getBody()}");
             }
             throw $e;
         }
