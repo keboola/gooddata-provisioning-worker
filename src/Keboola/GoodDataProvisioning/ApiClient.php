@@ -127,8 +127,7 @@ class ApiClient
         } catch (\Exception $e) {
             $response = $e instanceof RequestException && $e->hasResponse() ? $e->getResponse() : null;
             if ($response) {
-                $responseJson = \GuzzleHttp\json_decode($response->getBody(), true);
-                throw new UserException("Request $method  $uri failed (status {$response->getStatusCode()}): $responseJson");
+                throw new UserException("Request $method  $uri failed (status {$response->getStatusCode()}): {$response->getBody()}");
             }
             throw $e;
         }
