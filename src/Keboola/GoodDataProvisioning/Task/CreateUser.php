@@ -13,7 +13,7 @@ class CreateUser extends AbstractTask
 {
     public function run($jobId, $params)
     {
-        $job = $this->apiClient->getUserJob($jobId);
+        $job = $this->apiClient->getJob($jobId);
         if (!$job) {
             throw new UserException("Job $jobId not found, try again please");
         }
@@ -32,10 +32,12 @@ class CreateUser extends AbstractTask
                 $this->imageParameters['gd']['domain'],
                 $options
             );
-        } catch (Exception $e) {
-            $this->apiClient->updateUserJob($jobId, ['error' => $e->getMessage(), 'status' => 'error']);
+        } catch (\Exception $e) {
+            $error = $e instanceof Exception ? $e->getMessage() : 'Failed with unknown error, check the job in KBC.';
+            $this->apiClient->updateJob($jobId, ['error' => $error, 'status' => 'error']);
             throw $e;
         }
-        $this->apiClient->updateUserJob($jobId, ['uid' => $uid, 'status' => 'ready']);
+        $this->apiClient->updateUser($jobId, ['uid' => $uid]);
+        $this->apiClient->updateJob($jobId, ['status' => 'success']);
     }
 }

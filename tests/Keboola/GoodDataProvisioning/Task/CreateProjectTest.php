@@ -18,16 +18,18 @@ class CreateProjectTest extends AbstractTaskTest
         $task = new CreateProject($this->gdClient, $this->apiClient, $this->imageParameters);
         $task->run($jobId, ['name' => $projectName, 'authToken' => TEST_GD_AUTH_TOKEN]);
 
-        $job = $this->apiClient->getProjectJob($jobId);
-        $this->assertNotEmpty($job['pid']);
-        $this->assertEquals('ready', $job['status']);
+        $project = $this->apiClient->getProject($jobId);
+        $this->assertNotEmpty($project['pid']);
 
-        $result = $this->gdClient->get("/gdc/projects/{$job['pid']}");
+        $job = $this->apiClient->getJob($jobId);
+        $this->assertEquals('success', $job['status']);
+
+        $result = $this->gdClient->get("/gdc/projects/{$project['pid']}");
         $this->assertArrayHasKey('project', $result);
         $this->assertArrayHasKey('meta', $result['project']);
         $this->assertArrayHasKey('title', $result['project']['meta']);
         $this->assertEquals($projectName, $result['project']['meta']['title']);
 
-        $this->gdClient->getProjects()->deleteProject($job['pid']);
+        $this->gdClient->getProjects()->deleteProject($project['pid']);
     }
 }

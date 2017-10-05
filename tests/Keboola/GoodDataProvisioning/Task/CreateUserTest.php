@@ -18,15 +18,17 @@ class CreateUserTest extends AbstractTaskTest
         $task = new CreateUser($this->gdClient, $this->apiClient, $this->imageParameters);
         $task->run($jobId, ['login' => $login, 'password' => '1234567x', 'firstName' => 'Test', 'lastName' => 'GD']);
 
-        $job = $this->apiClient->getUserJob($jobId);
-        $this->assertNotEmpty($job['uid']);
-        $this->assertEquals('ready', $job['status']);
+        $user = $this->apiClient->getUser($jobId);
+        $this->assertNotEmpty($user['uid']);
 
-        $result = $this->gdClient->get("/gdc/account/profile/{$job['uid']}");
+        $job = $this->apiClient->getJob($jobId);
+        $this->assertEquals('success', $job['status']);
+
+        $result = $this->gdClient->get("/gdc/account/profile/{$user['uid']}");
         $this->assertArrayHasKey('accountSetting', $result);
         $this->assertArrayHasKey('login', $result['accountSetting']);
         $this->assertEquals($login, $result['accountSetting']['login']);
 
-        $this->gdClient->getUsers()->deleteUser($job['uid']);
+        $this->gdClient->getUsers()->deleteUser($user['uid']);
     }
 }

@@ -9,7 +9,7 @@ namespace Keboola\GoodDataProvisioning\Task;
 use Keboola\GoodData\Exception;
 use Keboola\GoodDataProvisioning\UserException;
 
-class CreateProject extends AbstractTask
+class AddUserToProject extends AbstractTask
 {
     public function run($jobId, $params)
     {
@@ -18,18 +18,12 @@ class CreateProject extends AbstractTask
             throw new UserException("Job $jobId not found, try again please");
         }
         try {
-            $pid = $this->gdClient->getProjects()->createProject($params['name'], $params['authToken']);
+            $this->gdClient->getProjects()->addUser($params['pid'], $params['uid'], $params['role']);
         } catch (\Exception $e) {
-            if ($e->getCode() === 404) {
-                $err = 'Project creation failed, check your authToken';
-                $this->apiClient->updateJob($jobId, ['error' => $err, 'status' => 'error']);
-                throw new UserException($err);
-            }
             $error = $e instanceof Exception ? $e->getMessage() : 'Failed with unknown error, check the job in KBC.';
             $this->apiClient->updateJob($jobId, ['error' => $error, 'status' => 'error']);
             throw $e;
         }
-        $this->apiClient->updateProject($jobId, ['pid' => $pid]);
-        $this->apiClient->updateJob($jobId, ['status' => 'success']);
+        $this->apiClient->updateJob($jobId, ['status' => 'ready']);
     }
 }

@@ -90,24 +90,34 @@ class ApiClient
         $this->guzzle = new \GuzzleHttp\Client(array_merge(['handler' => $handlerStack], $this->guzzleOptions));
     }
 
-    public function getProjectJob($id)
+    public function getJob($id)
     {
-        return $this->request('get', "projects/jobs/$id");
+        return $this->request('get', "jobs/$id");
     }
 
-    public function updateProjectJob($id, $params)
+    public function updateJob($id, $params)
     {
-        return $this->request('patch', "projects/jobs/$id", $params);
+        return $this->request('patch', "jobs/$id", $params);
     }
 
-    public function getUserJob($id)
+    public function getProject($id)
     {
-        return $this->request('get', "users/jobs/$id");
+        return $this->request('get', "projects/$id");
     }
 
-    public function updateUserJob($id, $params)
+    public function updateProject($id, $params)
     {
-        return $this->request('patch', "users/jobs/$id", $params);
+        return $this->request('patch', "projects/$id", $params);
+    }
+
+    public function getUser($id)
+    {
+        return $this->request('get', "users/$id");
+    }
+
+    public function updateUser($id, $params)
+    {
+        return $this->request('patch', "users/$id", $params);
     }
 
     public function request($method, $uri, $params = [])

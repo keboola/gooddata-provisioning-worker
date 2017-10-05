@@ -12,6 +12,7 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
 {
     protected $projects;
     protected $users;
+    protected $jobs;
 
     public function __construct()
     {
@@ -22,6 +23,7 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
     {
         $jobId = rand(1, 255);
         $this->projects[$jobId] = [
+            'id' => $jobId,
             'pid' => null,
             'projectId' => $projectId,
             'authToken' => $authToken,
@@ -29,24 +31,30 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
             'createdBy' => $createdBy,
             'deletedOn' => null,
             'deletedBy' => null,
+        ];
+        $this->jobs[$jobId] = [
+            'id' => $jobId,
+            'projectId' => $projectId,
+            'createdOn' => date('c'),
+            'createdBy' => $createdBy,
             'status' => 'waiting',
             'error' => null
         ];
         return $jobId;
     }
 
-    public function getProjectJob($id)
+    public function getProject($id)
     {
         if (!isset($this->projects[$id])) {
-            throw new UserException('Job not found');
+            throw new UserException('Project not found');
         }
         return $this->projects[$id];
     }
 
-    public function updateProjectJob($id, $params)
+    public function updateProject($id, $params)
     {
         if (!isset($this->projects[$id])) {
-            throw new UserException('Job not found');
+            throw new UserException('Project not found');
         }
         $this->projects[$id] = array_replace($this->projects[$id], $params);
     }
@@ -55,32 +63,55 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
     {
         $jobId = rand(1, 255);
         $this->users[$jobId] = [
+            'id' => $jobId,
             'uid' => null,
             'login' => $login,
-            'projectId' => null,
+            'projectId' => 1,
             'createdOn' => date('c'),
             'createdBy' => $createdBy,
             'deletedOn' => null,
-            'deletedBy' => null,
+            'deletedBy' => null
+        ];
+        $this->jobs[$jobId] = [
+            'id' => $jobId,
+            'projectId' => 1,
+            'createdOn' => date('c'),
+            'createdBy' => $createdBy,
             'status' => 'waiting',
             'error' => null
         ];
         return $jobId;
     }
 
-    public function getUserJob($id)
+    public function getUser($id)
     {
         if (!isset($this->users[$id])) {
-            throw new UserException('Job not found');
+            throw new UserException('User not found');
         }
         return $this->users[$id];
     }
 
-    public function updateUserJob($id, $params)
+    public function updateUser($id, $params)
     {
         if (!isset($this->users[$id])) {
-            throw new UserException('Job not found');
+            throw new UserException('User not found');
         }
         $this->users[$id] = array_replace($this->users[$id], $params);
+    }
+
+    public function getJob($id)
+    {
+        if (!isset($this->jobs[$id])) {
+            throw new UserException('Job not found');
+        }
+        return $this->jobs[$id];
+    }
+
+    public function updateJob($id, $params)
+    {
+        if (!isset($this->jobs[$id])) {
+            throw new UserException('Job not found');
+        }
+        $this->jobs[$id] = array_replace($this->jobs[$id], $params);
     }
 }

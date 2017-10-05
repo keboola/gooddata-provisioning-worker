@@ -7,6 +7,7 @@
 namespace Keboola\GoodDataProvisioning;
 
 use Keboola\GoodData\Client;
+use Keboola\GoodDataProvisioning\Task\AddUserToProject;
 use Keboola\GoodDataProvisioning\Task\CreateProject;
 use Keboola\GoodDataProvisioning\Task\CreateUser;
 use Monolog\Handler\StreamHandler;
@@ -47,6 +48,8 @@ class App
                 $task->run($options['job']['id'], $options['job']['parameters']);
                 break;
             case 'AddUserToProject':
+                $task = new AddUserToProject($this->gdClient, $this->apiClient, $this->imageParameters);
+                $task->run($options['job']['id'], $options['job']['parameters']);
                 break;
             default:
                 throw new UserException('Task is not supported');
