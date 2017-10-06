@@ -114,4 +114,18 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
         }
         $this->jobs[$id] = array_replace($this->jobs[$id], $params);
     }
+
+    public function addUserToProject()
+    {
+        $jobId = rand(1, 255);
+        $this->jobs[$jobId] = [
+            'id' => $jobId,
+            'projectId' => 1,
+            'createdOn' => date('c'),
+            'createdBy' => 'me',
+            'status' => 'waiting',
+            'error' => null
+        ];
+        return $jobId;
+    }
 }

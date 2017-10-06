@@ -51,6 +51,7 @@ class ConfigParameters
                 }
                 break;
             case 'AddUserToProject':
+                $this->validateRequired($config, ['projectId', 'userId', 'role']);
                 break;
             default:
                 throw new UserException('Task is not supported');

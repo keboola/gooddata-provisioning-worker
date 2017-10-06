@@ -14,10 +14,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: sh -c './tests.sh'
+    command: sh -c '/code/vendor/bin/phpunit -c /code/phpunit.xml.dist  $$TEST_PATH'
     volumes:
       - ./:/code
     environment:
+      - TEST_PATH
       - TEST_GD_LOGIN
       - TEST_GD_PASSWORD
       - TEST_GD_BACKEND
