@@ -53,8 +53,11 @@ class ConfigParameters
             case 'AddUserToProject':
                 $this->validateRequired($config, ['projectId', 'userId', 'role']);
                 break;
+            case 'RemoveUserFromProject':
+                $this->validateRequired($config, ['projectId', 'userId']);
+                break;
             default:
-                throw new UserException('Task is not supported');
+                throw new UserException("Task {$config['parameters']['job']['name']} is not supported");
         }
         return $config;
     }

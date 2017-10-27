@@ -10,6 +10,7 @@ use Keboola\GoodData\Client;
 use Keboola\GoodDataProvisioning\Task\AddUserToProject;
 use Keboola\GoodDataProvisioning\Task\CreateProject;
 use Keboola\GoodDataProvisioning\Task\CreateUser;
+use Keboola\GoodDataProvisioning\Task\RemoveUserFromProject;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -49,6 +50,10 @@ class App
                 break;
             case 'AddUserToProject':
                 $task = new AddUserToProject($this->gdClient, $this->apiClient, $this->imageParameters);
+                $task->run($options['job']['id'], $options['job']['parameters']);
+                break;
+            case 'RemoveUserFromProject':
+                $task = new RemoveUserFromProject($this->gdClient, $this->apiClient, $this->imageParameters);
                 $task->run($options['job']['id'], $options['job']['parameters']);
                 break;
             default:
