@@ -128,4 +128,18 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
         ];
         return $jobId;
     }
+
+    public function removeUserFromProject()
+    {
+        $jobId = rand(1, 255);
+        $this->jobs[$jobId] = [
+            'id' => $jobId,
+            'projectId' => 1,
+            'createdOn' => date('c'),
+            'createdBy' => 'me',
+            'status' => 'waiting',
+            'error' => null
+        ];
+        return $jobId;
+    }
 }
