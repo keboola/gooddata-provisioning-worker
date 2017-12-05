@@ -120,6 +120,11 @@ class ApiClient
         return $this->request('patch', "users/$id", $params);
     }
 
+    public function listTokens()
+    {
+        return $this->request('get', 'tokens');
+    }
+
     public function request($method, $uri, $params = [])
     {
         $options = ['headers' => ['X-KBC-ManageApiToken' => $this->token]];

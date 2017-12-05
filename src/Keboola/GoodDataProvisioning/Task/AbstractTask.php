@@ -26,5 +26,5 @@ abstract class AbstractTask
         $this->imageParameters = $imageParameters;
     }
 
-    abstract public function run($jobId, $params);
+    abstract public function run($jobId, $params, $storageToken = null);
 }

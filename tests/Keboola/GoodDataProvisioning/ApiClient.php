@@ -19,7 +19,7 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
         parent::__construct(uniqid(), uniqid());
     }
 
-    public function createProject($projectId, $authToken, $createdBy)
+    public function createProject($projectId, $authToken = null, $createdBy)
     {
         $jobId = rand(1, 255);
         $this->projects[$jobId] = [
@@ -141,5 +141,19 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
             'error' => null
         ];
         return $jobId;
+    }
+
+    public function listTokens()
+    {
+        return [
+            [
+                'name' => 'keboola_demo',
+                'token' => TEST_GD_AUTH_TOKEN,
+            ],
+            [
+                'name' => 'keboola_production',
+                'token' => TEST_GD_AUTH_TOKEN,
+            ],
+        ];
     }
 }

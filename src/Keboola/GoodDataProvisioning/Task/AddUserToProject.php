@@ -12,7 +12,7 @@ use Keboola\GoodDataProvisioning\UserException;
 
 class AddUserToProject extends AbstractTask
 {
-    public function run($jobId, $params)
+    public function run($jobId, $params, $storageToken = null)
     {
         $job = $this->apiClient->getJob($jobId);
         if (!$job) {

@@ -42,7 +42,7 @@ class ConfigParameters
         }
         switch ($config['parameters']['job']['name']) {
             case 'CreateProject':
-                $this->validateRequired($config, ['name', 'authToken']);
+                $this->validateRequired($config, ['name']);
                 break;
             case 'CreateUser':
                 $this->validateRequired($config, ['firstName', 'lastName', 'login', 'password']);

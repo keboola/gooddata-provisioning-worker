@@ -8,17 +8,36 @@ namespace Keboola\GoodDataProvisioning\Task;
 
 use Keboola\GoodData\Exception;
 use Keboola\GoodDataProvisioning\UserException;
+use Keboola\StorageApi\Client;
 
 class CreateProject extends AbstractTask
 {
-    public function run($jobId, $params)
+    public function run($jobId, $params, $storageToken = null)
     {
         $job = $this->apiClient->getJob($jobId);
         if (!$job) {
             throw new UserException("Job $jobId not found, try again please");
         }
+        if (!isset($params['authToken'])) {
+            $storageClient = new Client(['token' => $storageToken]);
+            $tokenData = $storageClient->verifyToken();
+            $tokenName = (isset($tokenData['owner']['type']) && $tokenData['owner']['type'] == 'production')
+                ? 'keboola_production' : 'keboola_demo';
+            $token = null;
+            foreach ($this->apiClient->listTokens() as $t) {
+                if ($t['name'] == $tokenName) {
+                    $token = $t['token'];
+                    break;
+                }
+            }
+            if (!$token) {
+                throw new \Exception("Auth token $tokenName was not found");
+            }
+        } else {
+            $token = $params['authToken'];
+        }
         try {
-            $pid = $this->gdClient->getProjects()->createProject($params['name'], $params['authToken']);
+            $pid = $this->gdClient->getProjects()->createProject($params['name'], $token);
         } catch (\Exception $e) {
             if ($e->getCode() === 404) {
                 $err = 'Project creation failed, check your authToken';
