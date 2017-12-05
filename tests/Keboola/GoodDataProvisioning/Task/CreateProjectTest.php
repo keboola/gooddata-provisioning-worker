@@ -16,7 +16,7 @@ class CreateProjectTest extends AbstractTaskTest
         $jobId = $this->apiClient->createProject(1, TEST_GD_AUTH_TOKEN, 'me');
 
         $task = new CreateProject($this->gdClient, $this->apiClient, $this->imageParameters);
-        $task->run($jobId, ['name' => $projectName, 'authToken' => TEST_GD_AUTH_TOKEN]);
+        $task->run($jobId, ['name' => $projectName, 'authToken' => TEST_GD_AUTH_TOKEN], TEST_STORAGE_TOKEN);
 
         $project = $this->apiClient->getProject($jobId);
         $this->assertNotEmpty($project['pid']);
@@ -39,7 +39,7 @@ class CreateProjectTest extends AbstractTaskTest
         $jobId = $this->apiClient->createProject(2, null, 'me');
 
         $task = new CreateProject($this->gdClient, $this->apiClient, $this->imageParameters);
-        $task->run($jobId, ['name' => $projectName], TEST_STORAGE_API_TOKEN);
+        $task->run($jobId, ['name' => $projectName], TEST_STORAGE_TOKEN);
 
         $project = $this->apiClient->getProject($jobId);
         $this->assertNotEmpty($project['pid']);

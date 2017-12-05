@@ -25,6 +25,8 @@ services:
       - TEST_GD_DOMAIN
       - TEST_GD_SSO_PROVIDER
       - TEST_GD_AUTH_TOKEN
+      - TEST_MANAGE_TOKEN
+      - TEST_STORAGE_TOKEN
 
   ci-tests:
     build:
@@ -41,3 +43,5 @@ services:
       - TEST_GD_DOMAIN
       - TEST_GD_SSO_PROVIDER
       - TEST_GD_AUTH_TOKEN
+      - TEST_MANAGE_TOKEN
+      - TEST_STORAGE_TOKEN

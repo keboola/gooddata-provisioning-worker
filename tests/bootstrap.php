@@ -3,11 +3,11 @@
 defined('TEST_API_BASEURI')
 || define('TEST_API_BASEURI', getenv('TEST_API_BASEURI') ? getenv('TEST_API_BASEURI') : null);
 
-defined('TEST_STORAGE_API_TOKEN')
-|| define('TEST_STORAGE_API_TOKEN', getenv('TEST_STORAGE_API_TOKEN') ? getenv('TEST_STORAGE_API_TOKEN') : null);
+defined('TEST_STORAGE_TOKEN')
+|| define('TEST_STORAGE_TOKEN', getenv('TEST_STORAGE_TOKEN') ? getenv('TEST_STORAGE_TOKEN') : null);
 
-defined('TEST_MANAGE_API_TOKEN')
-|| define('TEST_MANAGE_API_TOKEN', getenv('TEST_MANAGE_API_TOKEN') ? getenv('TEST_MANAGE_API_TOKEN') : null);
+defined('TEST_MANAGE_TOKEN')
+|| define('TEST_MANAGE_TOKEN', getenv('TEST_MANAGE_TOKEN') ? getenv('TEST_MANAGE_TOKEN') : null);
 
 defined('TEST_GD_LOGIN')
 || define('TEST_GD_LOGIN', getenv('TEST_GD_LOGIN') ? getenv('TEST_GD_LOGIN') : null);

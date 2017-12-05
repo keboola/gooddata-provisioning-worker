@@ -19,7 +19,7 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
         parent::__construct(uniqid(), uniqid());
     }
 
-    public function createProject($projectId, $authToken = null, $createdBy)
+    public function createProject($projectId, $authToken = null, $createdBy = null)
     {
         $jobId = rand(1, 255);
         $this->projects[$jobId] = [
