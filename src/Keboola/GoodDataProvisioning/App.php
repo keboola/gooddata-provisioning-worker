@@ -42,7 +42,7 @@ class App
         switch ($options['job']['name']) {
             case 'CreateProject':
                 $task = new CreateProject($this->gdClient, $this->apiClient, $this->imageParameters);
-                $task->run($options['job']['id'], $options['job']['parameters'], getenv('KBC_TOKENID'));
+                $task->run($options['job']['id'], $options['job']['parameters'], getenv('KBC_TOKEN'));
                 break;
             case 'CreateUser':
                 $task = new CreateUser($this->gdClient, $this->apiClient, $this->imageParameters);
