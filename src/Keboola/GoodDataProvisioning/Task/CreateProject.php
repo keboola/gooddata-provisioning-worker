@@ -48,7 +48,7 @@ class CreateProject extends AbstractTask
             $this->apiClient->updateJob($jobId, ['error' => $error, 'status' => 'error']);
             throw $e;
         }
-        $this->apiClient->updateProject($jobId, ['pid' => $pid]);
+        $this->apiClient->updateProject($jobId, ['pid' => $pid, 'token' => $token]);
         $this->apiClient->updateJob($jobId, ['status' => 'success']);
     }
 }
