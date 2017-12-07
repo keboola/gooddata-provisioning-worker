@@ -10,9 +10,13 @@ use Keboola\GoodDataProvisioning\UserException;
 
 class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
 {
-    protected $projects;
-    protected $users;
-    protected $jobs;
+    public $projects = [];
+    public $users = [];
+    public $jobs = [];
+    public $tokens = [
+        ['name' => 'keboola_demo', 'token' => TEST_GD_AUTH_TOKEN],
+        ['name' => 'keboola_production', 'token' => TEST_GD_AUTH_TOKEN],
+    ];
 
     public function __construct()
     {
@@ -49,6 +53,11 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
             throw new UserException('Project not found');
         }
         return $this->projects[$id];
+    }
+
+    public function listProjects()
+    {
+        return $this->projects;
     }
 
     public function updateProject($id, $params)
@@ -145,15 +154,6 @@ class ApiClient extends \Keboola\GoodDataProvisioning\ApiClient
 
     public function listTokens()
     {
-        return [
-            [
-                'name' => 'keboola_demo',
-                'token' => TEST_GD_AUTH_TOKEN,
-            ],
-            [
-                'name' => 'keboola_production',
-                'token' => TEST_GD_AUTH_TOKEN,
-            ],
-        ];
+        return $this->tokens;
     }
 }

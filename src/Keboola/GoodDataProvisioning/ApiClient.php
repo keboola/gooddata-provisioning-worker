@@ -105,6 +105,11 @@ class ApiClient
         return $this->request('get', "projects/$id");
     }
 
+    public function listProjects()
+    {
+        return $this->request('get', 'projects');
+    }
+
     public function updateProject($id, $params)
     {
         return $this->request('patch', "projects/$id", $params);

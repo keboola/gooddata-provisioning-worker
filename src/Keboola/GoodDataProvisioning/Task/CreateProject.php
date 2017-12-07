@@ -12,30 +12,47 @@ use Keboola\StorageApi\Client;
 
 class CreateProject extends AbstractTask
 {
+    public function checkProjectsCountLimit($tokenName, $tokenData)
+    {
+        $count = array_reduce($this->apiClient->listProjects(), function ($count, $project) use ($tokenName) {
+            return ($project['authToken'] == $tokenName) ? ++$count : $count;
+        }, 0);
+        $limit = isset($tokenData['owner']['limits']['goodData.projectsCount'])
+            ? $tokenData['owner']['limits']['goodData.projectsCount'] : 0;
+        if ($count >= $limit) {
+            throw new UserException('Allowed projects count limit reached');
+        }
+    }
+
+    public function getDefaultToken(Client $storageClient)
+    {
+        $tokenData = $storageClient->verifyToken();
+        $tokenName = (isset($tokenData['owner']['type']) && $tokenData['owner']['type'] == 'production')
+            ? 'keboola_production' : 'keboola_demo';
+        $this->checkProjectsCountLimit($tokenName, $tokenData);
+        $token = null;
+        foreach ($this->apiClient->listTokens() as $t) {
+            if ($t['name'] == $tokenName) {
+                $token = $t['token'];
+                break;
+            }
+        }
+        if (!$token) {
+            throw new \Exception("Auth token $tokenName was not found");
+        }
+        return $token;
+    }
+
     public function run($jobId, $params, $storageToken = null)
     {
         $job = $this->apiClient->getJob($jobId);
         if (!$job) {
             throw new UserException("Job $jobId not found, try again please");
         }
-        if (!isset($params['authToken'])) {
-            $storageClient = new Client(['token' => $storageToken]);
-            $tokenData = $storageClient->verifyToken();
-            $tokenName = (isset($tokenData['owner']['type']) && $tokenData['owner']['type'] == 'production')
-                ? 'keboola_production' : 'keboola_demo';
-            $token = null;
-            foreach ($this->apiClient->listTokens() as $t) {
-                if ($t['name'] == $tokenName) {
-                    $token = $t['token'];
-                    break;
-                }
-            }
-            if (!$token) {
-                throw new \Exception("Auth token $tokenName was not found");
-            }
-        } else {
-            $token = $params['authToken'];
-        }
+
+        $token = isset($params['authToken']) ? $params['authToken']
+            : $this->getDefaultToken(new Client(['token' => $storageToken]));
+
         try {
             $pid = $this->gdClient->getProjects()->createProject($params['name'], $token);
         } catch (\Exception $e) {
